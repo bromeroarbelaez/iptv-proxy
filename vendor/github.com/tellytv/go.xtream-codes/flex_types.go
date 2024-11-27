@@ -82,13 +82,21 @@ func (f FlexInt) MarshalJSON() ([]byte, error) {
 }
 
 func (f *FlexInt) UnmarshalJSON(data []byte) error {
-	var v int64
+    var v int64
 
-	data = bytes.Trim(data, `" `)
+    // Elimina comillas y espacios
+    data = bytes.Trim(data, `" `)
 
-	err := json.Unmarshal(data, &v)
-	*f = FlexInt(v)
-	return err
+    // Si los datos están vacíos, asigna un valor predeterminado (por ejemplo, 0)
+    if len(data) == 0 {
+        *f = FlexInt(0)
+        return nil
+    }
+
+    // Intenta deserializar el valor como un entero
+    err := json.Unmarshal(data, &v)
+    *f = FlexInt(v)
+    return err
 }
 
 type FlexFloat float64
